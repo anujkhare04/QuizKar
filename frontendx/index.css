@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bungee+Tint&family=DM+Serif+Text:ital@0;1&family=Italianno&family=Luckiest+Guy&family=Monoton&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Glitch&family=Rubik+Iso&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bungee+Tint&family=DM+Serif+Text:ital@0;1&family=Italianno&family=Luckiest+Guy&family=Monoton&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Distressed&family=Rubik+Glitch&family=Rubik+Iso&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bungee+Tint&family=DM+Serif+Text:ital@0;1&family=Italianno&family=Luckiest+Guy&family=Monoton&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Distressed&family=Rubik+Glitch&family=Rubik+Iso&display=swap');
+@import "tailwindcss";
+
+.f1 {
+  font-family: "Italianno", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.f2 {
+  font-family: "Rubik Distressed", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.f3 {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+ 
+  font-style: normal;
+}
+.f4 {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  
+  font-style: normal;
+}
