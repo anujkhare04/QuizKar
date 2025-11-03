@@ -11,7 +11,7 @@ connectDb();
 
 
 app.listen(port,()=>{
-    console.log(`server started at ${port}`);
+ return res.json(`server started at ${port}`);
     
 })
 

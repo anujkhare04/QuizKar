@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "frontendx/package.json", "use": "@vercel/static-build" },
+    { "src": "quizbackend/app.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/quiz/(.*)", "dest": "quizbackend/app.js" },
+    { "src": "/(.*)", "dest": "frontendx/$1" }
+  ]
+}
