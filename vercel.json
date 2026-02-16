@@ -4,7 +4,9 @@
     {
       "src": "frontendx/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": {
+        "distDir": "dist"
+      }
     },
     {
       "src": "quizbackend/api/index.js",

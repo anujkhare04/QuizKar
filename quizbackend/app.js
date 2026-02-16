@@ -26,7 +26,11 @@ app.use(['/api/quiz', '/quiz'], routes)
 app.use(['/api/auth', '/auth'], authroutes)
 
 // Health check
-app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok' }));
+app.get(['/api/health', '/health'], (req, res) => res.status(200).json({ status: 'ok', message: 'Backend is live' }));
 
+// 404 Fallback for API
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API route not found', path: req.originalUrl });
+});
 
 module.exports = app
