@@ -1,9 +1,14 @@
 const express = require('express')
 const cors = require("cors")
 const cookieParser = require('cookie-parser')
+const connectDb = require("./src/db/db.js");
+
 const app = express();
 const routes = require('./src/router/createquiz.js')
 const authroutes = require('./routes/route.js')
+
+// Connect to Database
+connectDb().catch(err => console.error("Initial DB connection failed:", err));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -11,16 +16,17 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "https://quiz-website-delta.vercel.app"], // Add your vercel domain
     credentials: true,
   })
 );
 
 
-app.use('/quiz', routes)
-app.use('/auth', authroutes)
+app.use(['/api/quiz', '/quiz'], routes)
+app.use(['/api/auth', '/auth'], authroutes)
 
-
+// Health check
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
 
 module.exports = app
