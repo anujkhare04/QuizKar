@@ -11,29 +11,29 @@ const testsetup = ({ quizData }) => {
   return (
     <div className="w-full overflow-x-hidden max-h-screen bg-linear-to-r from-orange-200 via-purple-500 to-pink-500">
       <div className="relative w-full shadow -md flex flex-col md:flex-row items-center justify-between py-10 px-8 mb-10">
-        <div className="absolute inset-0 rounded-lg shadow-lg bg-linear-to-r from-orange-200 via-purple-500 to-pink-500 -z-10"></div>
+        <div className="absolute inset-0 rounded-lg  bg-linear-to-r from-orange-200 via-purple-500 to-pink-500 -z-10"></div>
 
-        <h1 className="text-4xl font-bold py-4 bg-clip-text text-transparent bg-linear-to-r from-black via-blue-900 to-blue-900 text-center md:text-left">
+        <h1 className="text-4xl  font-bold py-4 bg-clip-text text-transparent bg-linear-to-r from-black via-blue-900 to-blue-900 text-center md:text-left">
           {quizData.category} Quiz  
         </h1>
            
            
-        <div className="flex items-center justify-center gap-10">
+        <div className="flex items-center justify-center  gap-10">
           {quizData.type === "numberOfQuestions" && (
-            <button className=" bg-purple-900 text-white px-7 py-4 text-xl f4 rounded-4xl ">
-              No of questions - {quizData.questionLimit}
+            <button className=" bg-purple-900 text-white px-7  py-4 text-xl f4 rounded-b-4xl ">
+               Number of Question - {quizData.questionLimit}
             </button>
           )}
 
           {quizData.type === "timed" && (
-            <button className=" bg-purple-900 text-white px-7 py-4 text-xl f4 rounded-4xl ">
-              QuizType - Time
+            <button className=" bg-purple-900 text-white px-7 py-4 text-xl f4 rounded-b-4xl ">
+               Time
             </button>
           )}
 
           {quizData.type === "Stop on Incorrect" && (
-            <button className=" bg-purple-900 text-white px-7 py-4 text-xl f4 rounded-4xl ">
-              QuizType-Stop on Incorrect
+            <button className=" bg-purple-900 text-white px-7 py-4 text-xl f3 rounded-b-4xl ">
+               Stop on Incorrect
             </button>
           )}
         </div>
@@ -85,7 +85,7 @@ const testsetup = ({ quizData }) => {
         </div>
 
         <Link to={`/categories/${quizData.category}`} state={{ quizData }}>
-          <button className="bg-green-500 ml-150 mt-30 mb-10 border-none text-white  px-7 py-4 text-md f5 rounded-xl active:scale-95">
+          <button   className="className=' mb-10 mt-20 f3 ml-150 px-1 w-40 py-3 bg-orange-100 rounded-sm active:scale-95">
             Start Test
           </button>
         </Link>
