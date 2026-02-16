@@ -5,7 +5,7 @@
     { "src": "quizbackend/app.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/quiz/(.*)", "dest": "quizbackend/app.js" },
+     { "src": "/(.*)", "dest": "/api/index.js" }
     { "src": "/(.*)", "dest": "frontendx/$1" }
   ]
 }
