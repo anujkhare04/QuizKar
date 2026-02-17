@@ -43,11 +43,13 @@ module.exports.regsiteruser = async (req, res) => {
       process.env.JWT_SECRET_KEY
     );
 
-   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-});
+    res.cookie("token", token, {
+      httpOnly: true, // prevents JS access
+      secure: false, // true if using HTTPS, false for local dev
+      sameSite: "lax", // "lax" works for most cases
+      path: "/", // must match when clearing
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     return res.json({
       message: "User register successfully",
@@ -88,12 +90,13 @@ module.exports.loginuser = async (req, res) => {
       { id: user._id, email: user.email },
       process.env.JWT_SECRET_KEY
     );
-   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-});
-
+    res.cookie("token", token, {
+      httpOnly: true, // prevents JS access
+      secure: false, // true if using HTTPS, false for local dev
+      sameSite: "lax", // "lax" works for most cases
+      path: "/", // must match when clearing
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     return res.json({
       message: "user logged in !",

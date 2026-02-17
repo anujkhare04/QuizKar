@@ -12,15 +12,18 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: true, 
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://quiz-website-delta.vercel.app"
+    ],
     credentials: true,
   })
 );
 
-
-app.use('/api/quiz', routes);
-app.use('/api/auth', authroutes);
-
+app.use(['/api/quiz', '/quiz'], routes);
+app.use(['/api/auth', '/auth'], authroutes);
 
 app.get(['/api/health', '/health'], (req, res) =>
   res.status(200).json({ status: 'ok', message: 'Backend is live' })
