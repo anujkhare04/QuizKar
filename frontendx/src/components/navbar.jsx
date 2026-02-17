@@ -17,130 +17,160 @@ const Navbar = () => {
 
 
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleClick = () => {
     setLoading(true);
-
+    setIsOpen(false);
     setTimeout(() => {
       window.location.reload();
     }, 1500);
-
   };
 
   const handleRandomQuiz = async () => {
+    setIsOpen(false);
     try {
-      // 1. Fetch available categories
       const categories = await getAllCategories();
-
       if (!categories || categories.length === 0) {
         alert("No categories available to play!");
         return;
       }
-
-      // 2. Randomly select one category
       const randomCat = categories[Math.floor(Math.random() * categories.length)];
-
-      // 3. Randomly select a mode
       const modes = ["numberOfQuestions", "timed", "Stop on Incorrect"];
       const randomMode = modes[Math.floor(Math.random() * modes.length)];
-
-      // 4. Generate random settings based on mode
       let quizSettings = {
         category: randomCat,
         type: randomMode
       };
-
       if (randomMode === "numberOfQuestions") {
-        // Random between 5 and 10 questions
         quizSettings.questionLimit = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
       } else if (randomMode === "timed") {
-        // Random between 1 and 5 minutes
         quizSettings.timeLimit = Math.floor(Math.random() * 5) + 1;
       }
-
-      // 5. Navigate to the game window
       navigate(`/categories/${randomCat}`, {
-        state: {
-          quizData: quizSettings
-        }
+        state: { quizData: quizSettings }
       });
-
     } catch (error) {
       console.error("Failed to start random quiz:", error);
     }
   };
 
-  console.log(user);
-  console.log(islogged);
-
-
   return (
-    <div className="backdrop-blur-md bg-white/10 border-b border-white/20 overflow-hidden shadow-xl z-50 fixed top-0 w-full flex items-center justify-between px-12 py-5 transition-all duration-300">
-      <div>
-        <Logo />
+    <nav className="backdrop-blur-md bg-white/10 border-b border-white/20 shadow-xl z-50 fixed top-0 w-full transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex-shrink-0">
+            <Logo />
+          </div>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/" onClick={handleClick} className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
+              Home
+            </Link>
+            <Link to="/create-quiz" className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
+              Create Quiz
+            </Link>
+
+            {user ? (
+              <>
+                <button onClick={() => navigate("/profile")} className="rounded-full border-2 border-white/20 text-white/90 active:scale-95 px-3 py-1.5">
+                  <i className="ri-user-fill"></i>
+                </button>
+                <button
+                  onClick={async () => {
+                    await logoutUser();
+                    dispatch(removeuser());
+                    navigate("/login");
+                  }}
+                  className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
+                Login
+              </Link>
+            )}
+
+            <button
+              onClick={handleRandomQuiz}
+              className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20"
+            >
+              Random Quiz
+            </button>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-white hover:text-white/80 p-2"
+            >
+              <i className={isOpen ? "ri-close-line text-2xl" : "ri-menu-line text-2xl"}></i>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="f3 text-md flex items-center justify-between gap-10">
-        <Link to="/">
-          <button
+      {/* Mobile Menu */}
+      <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-black/60 backdrop-blur-lg border-t border-white/10`}>
+        <div className="px-4 pt-2 pb-6 space-y-2">
+          <Link
+            to="/"
             onClick={handleClick}
-            disabled={loading}
-            className="px-6 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20 disabled:opacity-50"
+            className="block px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all"
           >
             Home
+          </Link>
+          <Link
+            to="/create-quiz"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all"
+          >
+            Create Quiz
+          </Link>
+          <button
+            onClick={handleRandomQuiz}
+            className="w-full text-left px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all border border-white/10 mt-2"
+          >
+            Random Quiz
           </button>
 
-
-
-
-
-
-        </Link>
-        <Link to="/create-quiz" className="px-6 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20 disabled:opacity-50"
-        >
-          Create Quiz
-        </Link>
-
-        
-
-        {
-          user ? (
-            <button onClick={() => navigate("/profile")} className="rounded-full border-2 border-white/20 border-full  text-md text-white/90 active:scale-93 px-2 py-1"><i class="ri-user-fill"></i></button>
-
-          ) : (
-            <Link to="/login">
-              <button className="px-6 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20 disabled:opacity-50"
-              > Login
+          {user ? (
+            <>
+              <Link
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={async () => {
+                  setIsOpen(false);
+                  await logoutUser();
+                  dispatch(removeuser());
+                  navigate("/login");
+                }}
+                className="w-full text-left px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all text-red-400"
+              >
+                Logout
               </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all"
+            >
+              Login
             </Link>
           )}
-
-        {user ? (
-          <>
-            <button
-              onClick={async () => {
-                await logoutUser();
-                dispatch(removeuser());
-                navigate("/login");
-              }}
-              className="px-6 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20 disabled:opacity-50"
-            >
-              Logout
-            </button>
-          </>
-        ) : null}
-
-
-
-        {" "}
-        <button
-          onClick={handleRandomQuiz}
-          className="px-6 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20 disabled:opacity-50"
-        >
-          Random Quiz
-        </button>
-
+        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

@@ -1,36 +1,36 @@
-const express = require('express')
-const cors = require("cors")
-const cookieParser = require('cookie-parser')
-const connectDb = require("./src/db/db.js");
+const express = require('express');
+const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 const app = express();
-const routes = require('./src/router/createquiz.js')
-const authroutes = require('./routes/route.js')
 
-// Connect to Database
-connectDb().catch(err => console.error("Initial DB connection failed:", err));
+const routes = require('./src/router/createquiz.js');
+const authroutes = require('./routes/route.js');
 
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "https://quiz-website-delta.vercel.app"], // Add your vercel domain
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://quiz-website-delta.vercel.app"
+    ],
     credentials: true,
   })
 );
 
+app.use(['/api/quiz', '/quiz'], routes);
+app.use(['/api/auth', '/auth'], authroutes);
 
-app.use(['/api/quiz', '/quiz'], routes)
-app.use(['/api/auth', '/auth'], authroutes)
+app.get(['/api/health', '/health'], (req, res) =>
+  res.status(200).json({ status: 'ok', message: 'Backend is live' })
+);
 
-// Health check
-app.get(['/api/health', '/health'], (req, res) => res.status(200).json({ status: 'ok', message: 'Backend is live' }));
-
-// 404 Fallback for API
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({ error: 'API route not found', path: req.originalUrl });
 });
 
-module.exports = app
+module.exports = app;

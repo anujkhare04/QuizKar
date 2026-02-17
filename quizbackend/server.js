@@ -4,6 +4,8 @@ const app = require("./app.js");
 const connectDb = require("./src/db/db.js");
 const port = Number(process.env.PORT) || 3000;
 
+
+
 const startServer = async () => {
   try {
     await connectDb();
