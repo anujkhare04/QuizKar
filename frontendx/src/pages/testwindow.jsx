@@ -15,20 +15,6 @@ const Testwindow = ({ quizData }) => {
   const [status, setstatus] = useState("idle");
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const [answered, setAnswered] = useState(false);
-
-
-  // const handleViolation = () => {
-  //   setstatus("finished");
-  //   document.exitFullscreen();
-  // };
-
-  // const { enableFullScreen } = useQuizSecurity(handleViolation, 1);
-
-  // const startQuiz = () => {
-  //   enableFullScreen();
-  //   setstatus("playing");
-  // };
-
   const { cat } = useParams();
   const [res, setRes] = useState([]);
   const [curindex, setcurindex] = useState(0);

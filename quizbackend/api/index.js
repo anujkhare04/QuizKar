@@ -1,3 +1,14 @@
+
+
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.info = () => {};
+  console.debug = () => {};
+}
+
+
+
+
 const app = require("../app");
 const connectDb = require("../src/db/db.js");
 
