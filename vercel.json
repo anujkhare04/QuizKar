@@ -19,9 +19,7 @@
       "dest": "quizbackend/api/index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "frontendx/$1",
-      "check": true
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
