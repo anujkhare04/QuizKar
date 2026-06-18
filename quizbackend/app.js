@@ -16,9 +16,8 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "http://localhost:5175",
-      "https://quiz-website-delta.vercel.app",
-      "https://quizwebsite-production-af02.up.railway.app"
-    ],
+      "https://quiz-website-swart-seven.vercel.app",
+       ],
     credentials: true,
   })
 );
