@@ -7,7 +7,7 @@ const MockTest = () => {
 
 
   return (
-    <div className="min-h-screen pt-32 pb-12 px-4">
+    <div className="min-h-screen  pb-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white/10 backdrop-blur-xl rounded-[40px] p-8 md:p-12 shadow-2xl border border-white/20 animate-in fade-in zoom-in duration-500">
           <div className="text-center mb-12">

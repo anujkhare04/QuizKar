@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "./Logo";
-import { adduser, removeuser } from "../feature/auth.slice";
+import { removeuser } from "../feature/auth.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllCategories } from "../api/createApi";
@@ -10,10 +10,12 @@ import { useState } from "react";
 
 
 const Navbar = () => {
-  const { islogged, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const currentUser = user?.user ?? user;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+   const [loading2, setLoading2] = useState(true);
 
 
 
@@ -24,7 +26,22 @@ const Navbar = () => {
     setIsOpen(false);
     setTimeout(() => {
       window.location.reload();
-    }, 1500);
+    }, 4000);
+  };
+   
+   console.log("USER VALUE:", user);
+ 
+  
+  const handleClick2 = () => {
+
+    
+
+    setTimeout(() => {
+      navigate("/qchose"); 
+    }, 1000);
+
+
+
   };
 
   const handleRandomQuiz = async () => {
@@ -55,67 +72,109 @@ const Navbar = () => {
     }
   };
 
-  return (
-    <nav className="backdrop-blur-md bg-white/10 border-b border-white/20 shadow-xl z-50 fixed top-0 w-full transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0">
-            <Logo />
-          </div>
+  
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/" onClick={handleClick} className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
-              Home
-            </Link>
-            <Link to="/create-quiz" className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
+  return (
+
+    <nav className={`backdrop-blur-md bg-black border-b-2 shadow-xl z-50 fixed top-0 w-full transition-all duration-300 
+       
+    `}>
+         { loading &&
+          <h1 className="h-1 w-full bg-linear-to-r from-green-600 via-red-500 to-yellow-500 animate-pulse z-50 fixed top-20"></h1>                    
+         }
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-2">
+        <div className="flex items-center justify-between h-20">
+          <Link to="/">
+                  <Logo/>
+          </Link>
+         
+                
+          <div className="hidden md:flex items-center justify-between gap-3">
+            
+            <Link
+              to="/create-quiz"
+              className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border-2 "
+            >
               Create Quiz
             </Link>
 
             {user ? (
               <>
-                <button onClick={() => navigate("/profile")} className="rounded-full border-2 border-white/20 text-white/90 active:scale-95 px-3 py-1.5">
-                  <i className="ri-user-fill"></i>
-                </button>
+                {/* Desktop Profile */}
+                <Link
+                  to="/Dashboard"
+                  className="hidden md:flex px-2 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border-2 items-center gap-2"
+                >
+                  {currentUser?.img ? (
+                    <img src={currentUser.img} alt="avatar" className="w-6 h-6 rounded-full object-cover" />
+                  ) : (
+                    <i className="ri-user-fill"></i>
+                  )}
+                  <span className="hidden lg:inline">Profile</span>
+                </Link>
+
+                {/* Mobile Logout Icon */}
                 <button
                   onClick={async () => {
+                    setIsOpen(false);
                     await logoutUser();
                     dispatch(removeuser());
                     navigate("/login");
                   }}
-                  className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20"
+                  className="md:hidden px-2 py-2 text-red-400 font-medium rounded-full hover:bg-red-500/10 transition-all duration-300 border-2 border-red-400/50"
+                  title="Logout"
                 >
-                  Logout
+                  <i className="ri-logout-box-line text-xl"></i>
                 </button>
               </>
             ) : (
-              <Link to="/login" className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20">
+              <Link
+                to="/login"
+                className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border-2 "
+              >
                 Login
               </Link>
-            )}
-
+            
+)}
             <button
               onClick={handleRandomQuiz}
-              className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border border-white/20"
+              className="px-4 py-2 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300 border-2 "
             >
               Random Quiz
             </button>
-          </div>
+            
+ 
 
-          {/* Mobile menu button */}
+  <button
+    onClick={handleClick2}
+    className="f3 px-3 py-2 from-black to-green-600 text-purple-600 font-bold rounded-full shadow-xl border-2 hover:shadow-2xl active:scale-95 transition-all duration-300 flex items-center gap-2 group"
+  >
+    <span>Get Started</span>
+    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+  </button>
+  
+ </div>
+ 
+ 
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-white/80 p-2"
             >
-              <i className={isOpen ? "ri-close-line text-2xl" : "ri-menu-line text-2xl"}></i>
+              <i
+                className={
+                  isOpen ? "ri-close-line text-2xl" : "ri-menu-line text-2xl"
+                }
+              ></i>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-black/60 backdrop-blur-lg border-t border-white/10`}>
+      <div
+        className={`${isOpen ? "block" : "hidden"} md:hidden bg-black/60 backdrop-blur-lg border-t border-white/10`}
+      >
         <div className="px-4 pt-2 pb-6 space-y-2">
           <Link
             to="/"
@@ -138,15 +197,27 @@ const Navbar = () => {
             Random Quiz
           </button>
 
+          
+
           {user ? (
             <>
               <Link
-                to="/profile"
+                to="/Dashboard"
                 onClick={() => setIsOpen(false)}
                 className="block px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all"
               >
-                Profile
+                {currentUser?.img ? (
+                  <span className="inline-flex items-center gap-2">
+                    <img src={currentUser.img} alt="avatar" className="w-6 h-6 rounded-full object-cover" />
+                    Profile
+                  </span>
+                ) : (
+                  <>
+                    <i className="ri-user-fill"></i> Profile
+                  </>
+                )}
               </Link>
+
               <button
                 onClick={async () => {
                   setIsOpen(false);
@@ -154,9 +225,9 @@ const Navbar = () => {
                   dispatch(removeuser());
                   navigate("/login");
                 }}
-                className="w-full text-left px-4 py-3 text-white font-medium rounded-xl hover:bg-white/10 transition-all text-red-400"
+                className="w-full text-left px-4 py-3 text-red-400 font-medium rounded-xl hover:bg-red-500/10 transition-all flex items-center gap-2"
               >
-                Logout
+                <i className="ri-logout-box-line"></i> Logout
               </button>
             </>
           ) : (
@@ -170,7 +241,7 @@ const Navbar = () => {
           )}
         </div>
       </div>
-    </nav>
+    </nav >
   );
 };
 

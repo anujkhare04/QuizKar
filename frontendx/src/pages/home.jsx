@@ -1,44 +1,35 @@
 import React, { useState } from 'react';
 
-import Navbar from "../components/navbar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
+import Navbar from "../components/navbar";
+
 
 const categories = [
-  { name: "General Knowledge", color: "from-blue-400 to-blue-600" },
-  { name: "Science", color: "from-green-400 to-green-600" },
-  { name: "Geopolitics", color: "from-red-400 to-red-600" },
-  { name: "Sports", color: "from-yellow-400 to-yellow-500" },
+  { name: "General Knowledge", color: "from-blue-400 to-black-600" },
+  { name: "Science", color: "from-black to-green-600" },
+  { name: "Geopolitics", color: "from-black to-white to-red-600" },
+  { name: "Sports", color: "from-blue-400 to-black-500" },
 ];
 
 
 const Home = () => {
 
-  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
 
 
 
-  const handleClick = () => {
-
-    setLoading(true);
-
-    setTimeout(() => {
-      navigate("/qchose"); // navigation happens AFTER loading
-    }, 1500);
-
-
-
-  };
 
   return (
     <>
-      <Navbar />
+      
 
-      <div className="min-h-screen pt-20 flex flex-col justify-between text-gray-800 font-sans">
-
-        <header className="px-6 md:px-20 py-12 md:py-24 text-white">
+      <div className="h-full  flex flex-col justify-between text-gray-800 font-sans">
+         <Navbar/>
+        <header className="px-6 md:px-20 mt-10 py-12 md:py-24 text-white">
+          
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
             <span className="text-4xl md:text-5xl font-light opacity-80">Welcome to</span>
             <div className="transform scale-125 md:scale-150 origin-left">
@@ -51,7 +42,7 @@ const Home = () => {
           </p>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 md:p-10 shadow-2xl border border-white/20">
-            <h1 className="text-center f4 text-2xl md:text-3xl mb-8 text-white">Multiple Categories</h1>
+            <h1 className="text-center f1 text-2xl md:text-5xl mb-8 text-white">Multiple Categories</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((cat) => (
                 <div
@@ -67,20 +58,10 @@ const Home = () => {
         </header>
 
         <div className="px-6 md:px-20 mb-20">
-          <button
-            onClick={handleClick}
-            className="f3 px-10 py-4 bg-white text-purple-600 font-bold rounded-full shadow-xl hover:shadow-2xl active:scale-95 transition-all duration-300 flex items-center gap-2 group"
-          >
-            <span>Get Started</span>
-            <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
-          </button>
+         
         </div>
 
-        {loading && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-          </div>
-        )}
+        
 
         <footer className="bg-black/10 backdrop-blur-md py-8 text-white/60 text-center text-sm border-t border-white/5">
           &copy; {new Date().getFullYear()} Quiz Website. All rights reserved.
@@ -92,7 +73,6 @@ const Home = () => {
 };
 
 export default Home;
-
 
 
 

@@ -9,11 +9,11 @@ const testsetup = ({ quizData }) => {
   console.log("test-", quizData);
 
   return (
-    <div className="min-h-screen bg-linear-to-r from-orange-200 via-purple-500 to-pink-500 pt-24 pb-12">
-      <div className="max-w-6xl mx-auto px-4 md:px-10">
+    <div className="min-h-screen bg-blackrr pt-5 pb-6">
+      <div className="max-w-6xl  mx-auto px-4 md:px-10">
 
-       
-        <div className="bg-white/10 backdrop-blur-xl rounded-[40px] p-8 md:p-12 mb-10 border border-white/20 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 animate-in fade-in slide-in-from-top-4 duration-500">
+
+        <div className=" p-2 md:p-8 mb-2   flex flex-col md:flex-row items-center justify-between gap-8 animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="text-center md:text-left">
             <span className="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-xs font-black uppercase tracking-widest mb-4">
               Quiz Confirmation
@@ -44,14 +44,14 @@ const testsetup = ({ quizData }) => {
           </div>
         </div>
 
-        
+
         <div className="bg-white/10 backdrop-blur-md rounded-[40px] p-8 md:p-12 border border-white/20 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h2 className="f3 text-2xl md:text-3xl text-white mb-10 border-b border-white/10 pb-4">
             Master the Rules
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-           
+
             <div className="p-8 bg-white/5 hover:bg-white/10 rounded-3xl border border-white/10 transition-all duration-300 group">
               <div className="w-12 h-12 bg-orange-400/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <i className="ri-list-check-2 text-orange-400 text-2xl"></i>
@@ -97,7 +97,7 @@ const testsetup = ({ quizData }) => {
 
           <div className="flex justify-center">
             <Link to={`/categories/${quizData.category}`} state={{ quizData }} className="w-full md:w-auto">
-              <button className="w-full md:px-20 py-5 bg-white text-purple-600 font-black text-2xl rounded-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em]">
+              <button className="w-full f5 md:px-20 py-5 bg-white text-purple-600 font-black text-2xl rounded-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em]">
                 Ignite Quiz
               </button>
             </Link>

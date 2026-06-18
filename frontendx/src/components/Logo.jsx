@@ -4,10 +4,9 @@ const Logo = ({ className = "" }) => {
     return (
         <div className={`flex items-center gap-3 group cursor-pointer select-none ${className}`}>
             <div className="relative flex items-center justify-center">
-                {/* Animated Background Glow */}
+                
                 <div className="absolute -inset-2 bg-linear-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-full blur-md opacity-20 group-hover:opacity-60 group-hover:blur-lg transition-all duration-700 animate-pulse"></div>
 
-                {/* Modern Geometric Icon (Abstract 'Q') */}
                 <div className="relative w-10 h-10 flex items-center justify-center">
                     <div className="absolute inset-0 border-[2.5px] border-white/40 rounded-xl rotate-45 group-hover:rotate-90 transition-transform duration-500 ease-out"></div>
                     <div className="absolute inset-1.5 border-[2.5px] border-orange-400 rounded-lg -rotate-12 group-hover:rotate-0 transition-transform duration-500 ease-out delay-75"></div>

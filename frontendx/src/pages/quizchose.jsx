@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Testsetup from "./testsetup";
 import { getAllCategories } from "../api/createApi";
+import Login from "../components/loginonly";
+import { useSelector } from "react-redux";
 
 
 
@@ -10,9 +12,11 @@ const quizchose = ({ setQuizData }) => {
 
   const [formdata, setformdata] = useState('')
   const [categories, setCategories] = useState([]);
-
-
-
+  const [showAuthGate, setShowAuthGate] = useState(false);
+  const navigate=useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  
+ 
 
   const { register, watch, handleSubmit } = useForm({
     defaultValues: {
@@ -23,7 +27,7 @@ const quizchose = ({ setQuizData }) => {
     },
   });
 
-
+  
 
 
 
@@ -81,25 +85,82 @@ const quizchose = ({ setQuizData }) => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+  if (!user) {
+    setShowAuthGate(true);
+  }
+}, [user]);
+
+ 
+
   return (
-    <div className="min-h-screen pt-24 pb-12">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-12 f3 drop-shadow-md">
+         
+    
+     
+
+    <div className=" relative min-h-screen pt-24 pb-12">
+     
+     
+  
+    <div className=" bg-white absolute top-10 left-120  z-200">
+        
+      </div>
+     
+   
+  {showAuthGate && (
+  <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto">
+    
+    
+    
+    <div className="absolute inset-0  bg-black/50 backdrop-blur-sm"></div>
+
+     
+      
+    
+    <button
+      type="button"
+       onClick={()=>setShowAuthGate(false)}
+      className="fixed top-4 right-4 text-white text-4xl z-[210]"
+    >
+      <i className="ri-close-circle-line"></i>
+    </button>
+
+    <div className="relative z-10 w-full flex justify-center">
+
+      <Login onContinueGuest={() => setShowAuthGate(false)} />
+    </div>
+
+  </div>
+  )}
+
+     
+     
+        
+      <div className="fixed top-0  h-20 w-full z-100">
+         <button onClick={()=>navigate("/")} className=" bg-white  absolute top-0 left-3 z-200 mt-5 rounded-2xl px-5 py-1 active:scale-99 text-black f3">Back</button>
+       
+        <h1 className=" mb-10 bg-black  p-5 py-2   text-3xl md:text-6xl font-bold text-white  text-center f3">
           Choose Your <span className="font-light">Challenge</span>
         </h1>
+      </div>
 
+     
+
+      <div className="max-w-7xl mx-auto px-4 mt-20 md:px-6">
+        
+         
         <form onSubmit={handleSubmit(onsubmit)} className="space-y-12">
-          <div className="bg-white/10 backdrop-blur-md rounded-[40px] p-6 md:p-10 shadow-2xl border border-white/20">
+          <div className="bg-white/10 backdrop-blur-md rounded-[10px] p-2 md:p-10 shadow-2xl border border-white/20">
             <h2 className="f3 text-xl md:text-2xl text-white mb-8 ml-2 flex items-center gap-3">
               <i className="ri-layout-grid-fill text-yellow-400"></i>
               Select Category
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid overflow-y-auto scroll-y p-2  max-h-[35vh]  grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((cat) => (
                 <label
                   key={cat.name}
-                  className={`group relative rounded-3xl p-8 shadow-xl cursor-pointer overflow-hidden transition-all duration-300 border-2
+                  className={`group relative rounded-3xl p-5 min-h-0 shadow-xl cursor-pointer overflow-hidden transition-all duration-300 border-2
                     ${selectedCategory === cat.name
                       ? "bg-white border-yellow-400 scale-105"
                       : "bg-white/5 border-white/10 hover:bg-white/10"}`}
@@ -128,33 +189,44 @@ const quizchose = ({ setQuizData }) => {
             </div>
           </div>
 
-          <div className="max-w-2xl mx-auto w-full bg-white/10 backdrop-blur-md rounded-[40px] p-8 md:p-12 shadow-2xl border border-white/20">
-            <h2 className="f3 text-xl md:text-2xl text-white mb-8 flex items-center gap-3">
+          
+
+          <div className=" mx-auto w-full bg-white/10 backdrop-blur-md rounded-[20px]  md:p-12 shadow-2xl border border-white/20">
+            <div className="flex items-center justify-between">
+              <h2 className="f3 text-xl md:text-2xl text-white mb-8 flex items-center gap-3">
               <i className="ri-settings-4-fill text-blue-400 font-normal"></i>
               Quiz Settings
             </h2>
+            
+              <button
+                type="submit"
+                className=" py-4 bg-white f3 text-purple-600 font-black text-sm px-5 rounded-sm shadow-xl hover:shadow-2xl hover:bg-black border-2 hover:text-white active:scale-95 transition-all uppercase tracking-wider"
+              >
+                Start Quiz
+              </button>
+            </div>
 
             <div className="space-y-8">
               <div>
                 <label className="block text-white/70 text-sm font-bold uppercase tracking-widest mb-4 ml-1">
                   Game Mode
                 </label>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="flex gap-3">
                   {["timed", "Stop on Incorrect", "numberOfQuestions"].map((mode) => (
-                    <label key={mode} className={`flex items-center gap-4 p-5 rounded-2xl border-2 transition-all cursor-pointer ${watchType === mode ? "bg-white border-yellow-400" : "bg-white/5 border-white/10 hover:bg-white/10"}`}>
+                    <label key={mode} className={`flex items-center gap-4 p-5 rounded-xl border-2 transition-all cursor-pointer ${watchType === mode ? "bg-white border-yellow-400" : "bg-white/5 border-white/10 hover:bg-white/10"}`}>
                       <input
                         type="radio"
                         value={mode}
                         {...register("type", { required: true })}
                         className="w-5 h-5 accent-purple-500"
                       />
-                      <span className={`font-bold capitalize ${watchType === mode ? "text-purple-600" : "text-white"}`}>
-                        {mode === "timed" ? "⏱️ Timed Trial" : mode === "Stop on Incorrect" ? "💀 Sudden Death" : "📝 Practice Mode"}
+                      <span className={` f3   capitalize ${watchType === mode ? "text-purple-600" : "text-white"}`}>
+                        {mode === "timed" ? <i class="  flex item-center justify-evenly gap-2 ri-timer-flash-line"><span>Timed Trial</span></i> : mode === "Stop on Incorrect" ?<i class=" flex item-center justify-evenly gap-2 ri-skull-line"><span>Sudden Death</span></i> :<i class=" flex item-center justify-evenly gap-2 ri-book-open-line "><span>Practice Mode</span></i>}
                       </span>
                     </label>
                   ))}
                 </div>
-              </div>
+              </div>  
 
               {watchType === "numberOfQuestions" && (
                 <div className="animate-in slide-in-from-top-4 duration-300">
@@ -184,16 +256,11 @@ const quizchose = ({ setQuizData }) => {
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="w-full py-5 bg-white text-purple-600 font-black text-xl rounded-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all mt-6 uppercase tracking-wider"
-              >
-                Start Quiz
-              </button>
             </div>
           </div>
         </form>
       </div>
+      
     </div>
   );
 };

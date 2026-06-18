@@ -23,6 +23,7 @@ export const Createquiz = async (data) => {
 
 }
 
+
 export const getcategory = async (cat) => {
 
   console.log(cat);
@@ -66,6 +67,18 @@ export const Aiques = async (data) => {
     throw error;
   }
 }
+
+export const AiquesFromFile = async (formData) => {
+  try {
+    const res = await axiosInstance.post("/quiz/Aiques/file", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error in AI file assistance", error);
+    throw error;
+  }
+};
 
 export const generateMockTestTopic = async (userTopic) => {
   try {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/authapi";
 
 import { adduser } from "../feature/auth.slice";
@@ -45,9 +45,9 @@ const RegisterForm = ({ setflag }) => {
 
       const res = await registerUser(newUserObj);
 
-      console.log(res.Regsiteruser);
+      console.log(res?.Regsiteruser);
 
-      if (res.Regsiteruser) {
+      if (res?.Regsiteruser) {
         dispatch(adduser(res.Regsiteruser))
         navigate("/");
       }
@@ -63,12 +63,11 @@ const RegisterForm = ({ setflag }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-12">
-      <form
+    <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 p-8 md:p-12 rounded-[40px] shadow-2xl w-full max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 animate-in fade-in zoom-in duration-500"
+        className="space-y-6 p-6 md:p-8 rounded-[30px] shadow-2xl w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 animate-in fade-in zoom-in duration-500"
       >
-        <div className="text-center mb-8">
+        <div className="text-center  mb-8">
           <h1 className="text-3xl md:text-4xl font-black text-white mb-2 f3">Create Account</h1>
           <p className="text-white/60 text-sm font-medium">Join the quiz community today!</p>
         </div>
@@ -184,7 +183,6 @@ const RegisterForm = ({ setflag }) => {
           </button>
         </div>
       </form>
-    </div>
   );
 };
 

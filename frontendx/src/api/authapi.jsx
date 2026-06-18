@@ -28,7 +28,11 @@ export const registerUser = async (data) => {
   
     }
   } catch (error) {
+    const message =
+      error?.response?.data?.message || "Registration failed. Please try again.";
     console.log("error in registration", error);
+    toast.error(message);
+    throw new Error(message);
   }
 };
 
@@ -45,7 +49,11 @@ export const loginUser = async (data) => {
     }
      
   } catch (error) {
+    const message =
+      error?.response?.data?.message || "Login failed. Please try again.";
     console.log("error in Login", error);
+    toast.error(message);
+    throw new Error(message);
   }
 };
 
@@ -59,6 +67,34 @@ export const logoutUser = async () => {
     }
   } catch (error) {
     console.log("error in logout", error);
+  }
+};
+
+
+export const forgotpass = async (email) => {
+  try { 
+    let res = await axiosInstance.post("/auth/forgot",{ email });
+
+    if (res) {
+       toast.success("If an account exists, a reset link has been sent.");
+      return res.data.message;                     
+    }
+  } catch (error) {
+    console.log("error in Email Sent to reset password", error);
+  }
+};  
+
+export const updateProfileApi = async (formData) => {
+  try {
+    const res = await axiosInstance.put("/auth/profile", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    toast.success("Profile updated successfully");
+    return res.data?.user;
+  } catch (error) {
+    const message = error?.response?.data?.message || "Failed to update profile";
+    toast.error(message);
+    throw new Error(message);
   }
 };
 

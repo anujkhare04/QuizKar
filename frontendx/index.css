@@ -3,6 +3,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bungee+Tint&family=DM+Serif+Text:ital@0;1&family=Italianno&family=Luckiest+Guy&family=Monoton&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Distressed&family=Rubik+Glitch&family=Rubik+Iso&display=swap');
 @import "tailwindcss";
 
+/* Hide accidental text caret bars on non-editable content */
+* {
+  caret-color: transparent;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: auto;
+}
+
 .f1 {
   font-family: "Italianno", cursive;
   font-weight: 400;
@@ -42,13 +53,20 @@
   animation: bounce-slow 2s infinite;
 }
 
+
+
+.scroll-y::-webkit-scrollbar { width: 8px; }
+.scroll-y::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 9999px; }
+.scroll-y::-webkit-scrollbar-track { background: transparent; }
+
+
 .text-shimmer {
   background: linear-gradient(90deg, #ffffff 0%, #ff9d00 50%, #ffffff 100%);
   background-size: 200% auto;
   color: #000;
-  background-clip: text;
-  text-fill-color: transparent;
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 3s linear infinite;
 }

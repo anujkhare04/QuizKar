@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
-const cookies = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const usermodel = require("../model/auth");
+const { sendResetEmail } = require("../service/mailservice");
+const crypto = require("crypto");
 
 module.exports.regsiteruser = async (req, res) => {
   console.log(req.body);
@@ -66,7 +67,13 @@ module.exports.regsiteruser = async (req, res) => {
 
 module.exports.loginuser = async (req, res) => {
   try {
-    const { password, username } = req.body;
+    const { password, username ,email } = req.body;
+
+    if (!username || !password ) {
+      return res.status(400).json({
+        message: "username and password are required",
+      });
+    }
 
     const user = await usermodel.findOne({
       $or: [{ username }],
@@ -81,8 +88,8 @@ module.exports.loginuser = async (req, res) => {
     const isvalid = await bcrypt.compare(password, user.password);
 
     if (!isvalid) {
-      return res.status().json({
-        message: "invalid creditenals",
+      return res.status(401).json({
+        message: "invalid credentials",
       });
     }
 
@@ -106,63 +113,11 @@ module.exports.loginuser = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "server error",
-      error: err,
+      error: err.message,
     });
   }
 };
 
-module.exports.registerseller = async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized: login first" });
-    }
-
-    const seller = await usermodel.findByIdAndUpdate(req.user._id, {
-      role: "seller",
-    });
-
-    if (!seller) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    console.log("Updated seller:", seller);
-
-    res.status(200).json({
-      message: "Seller updated",
-      seller: {
-        id: seller._id,
-        username: seller.username,
-        email: seller.email,
-        fullname: {
-          firstname: seller.fullname.firstname,
-          lastname: seller.fullname.lastname,
-          middlename: seller.fullname.middlename,
-        },
-        role: seller.role,
-      },
-    });
-  } catch (err) {
-    console.error("Error in registerseller:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
-
-// module.exports.loginseller=async(req,res)=>{
-//    const { email, password } = req.body;
-//   //   console.log(req.body);
-//   const user = await usermodel.findOne({
-//     $or: [{ email }],
-//   });
-//   if (!user) {
-//     return res.json("seller not found!");
-//   }
-//   const isValid = await bcrypt.compare(password, user.password);
-//   if (!isValid) {
-//     return res.json("invalid credentials");
-//   }
-//   const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET_KEY);
-//   res.json({ message: "seller logged in !", user, token });
-// };
 
 module.exports.logout = async (req, res) => {
   try {
@@ -186,20 +141,10 @@ module.exports.logout = async (req, res) => {
   }
 };
 
-// module.exports.profile = async (req, res) => {
-//   const userid = req.userId;
-
-//   const user = await usermodel.findById(userid);
-
-//   return res.status(200).json({
-//     message: "profile fetch",
-//     user,
-//   });
-// };
 
 module.exports.profile = async (req, res) => {
   try {
-    const userid = req.userId; // string of user id from middleware
+    const userid = req.userId; 
 
     const user = await usermodel.findById(userid).select("-password");
 
@@ -220,65 +165,101 @@ module.exports.profile = async (req, res) => {
 module.exports.updateProfile = async (req, res) => {
   try {
     const userId = req.userId;
-    const { firstname, middlename, lastname, img } = req.body;
-
     const user = await usermodel.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (firstname) user.fullname.firstname = firstname;
-    if (middlename) user.fullname.middlename = middlename;
-    if (lastname) user.fullname.lastname = lastname;
-    if (img) user.img = img;
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { username, firstname, lastname, middlename } = req.body || {};
+
+    if (typeof username === "string" && username.trim()) {
+      const nextUsername = username.trim();
+      const existingUsername = await usermodel.findOne({
+        username: nextUsername,
+        _id: { $ne: userId },
+      });
+      if (existingUsername) {
+        return res.status(400).json({ message: "Username already taken" });
+      }
+      user.username = nextUsername;
+    }
+
+    user.fullname = user.fullname || {};
+    if (typeof firstname === "string" && firstname.trim()) user.fullname.firstname = firstname.trim();
+    if (typeof lastname === "string" && lastname.trim()) user.fullname.lastname = lastname.trim();
+    if (typeof middlename === "string") user.fullname.middlename = middlename.trim();
+
+    if (req.file && req.file.buffer) {
+      const mimeType = req.file.mimetype || "image/jpeg";
+      const base64 = req.file.buffer.toString("base64");
+      user.img = `data:${mimeType};base64,${base64}`;
+    }
 
     await user.save();
+    const safeUser = await usermodel.findById(userId).select("-password");
 
     return res.status(200).json({
       message: "Profile updated successfully",
-      user
+      user: safeUser,
     });
-
   } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Failed to update profile", error: error.message });
   }
 };
-
-module.exports.addQuizResult = async (req, res) => {
+module.exports.forgotPassword= async (req, res) => {
   try {
-    const userId = req.userId;
-    const { score, totalQuestions, topic } = req.body;
+    const { email } = req.body;
 
-    const user = await usermodel.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await usermodel.findOne({ email });
+   
+    
+   
+    if (!user) {
+      return res.json({ msg: "If email exists, reset link sent" });
+    }
 
-    user.quizHistory.push({
-      score,
-      totalQuestions,
-      topic,
-      date: new Date()
-    });
+    const token = crypto.randomBytes(32).toString("hex");
 
-    // Update total score
-    user.totalScore = (user.totalScore || 0) + score;
+    user.resetToken = token;
+    user.resetTokenExpire = Date.now() + 10 * 60 * 1000;
 
     await user.save();
 
-    return res.status(200).json({
-      message: "Quiz result added",
-      user
-    });
-  } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+    await sendResetEmail(user.email, token ,user.username);
+
+    res.json({ msg: "Reset link sent to email" });
+
+  } catch (err) {
+    res.status(500).json({ msg: "Error sending reset email" });
   }
 };
 
-module.exports.getLeaderboard = async (req, res) => {
+module.exports.resetPassword = async (req, res) => {
   try {
-    const leaderboard = await usermodel.find().sort({ totalScore: -1 }).limit(10).select("username totalScore img fullname");
-    return res.status(200).json({
-      message: "Leaderboard fetched",
-      leaderboard
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const user = await usermodel.findOne({
+      resetToken: token,
+      resetTokenExpire: { $gt: Date.now() }
     });
-  } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpire = undefined;
+
+    await user.save();
+
+    res.json({ msg: "Password reset successful" });
+
+  } catch (err) {
+    res.status(500).json({ msg: "Error resetting password" });
   }
 };
