@@ -121,7 +121,10 @@ module.exports.loginuser = async (req, res) => {
 
 module.exports.logout = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+      token = req.headers.authorization.split(" ")[1];
+    }
 
     console.log(token);
 
@@ -131,7 +134,7 @@ module.exports.logout = async (req, res) => {
       });
     }
 
-    res.clearCookie("token");
+    res.clearCookie("token", getCookieOptions(req));
 
     res.status(200).json({ message: "Logged out successfully" });
   } catch (err) {

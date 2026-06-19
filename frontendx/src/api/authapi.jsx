@@ -1,31 +1,18 @@
-import axios from "axios";
 import axiosInstance from "../axios/axiosinstance";
-import { adduser } from "../feature/auth.slice";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-
 export const registerUser = async (data) => {
-         
-    
-  
-
   try {
     console.log("sending data:", data);
     let newUser = await axiosInstance.post("/auth/register", data);  
-     
     console.log(newUser);
-      
-    
-       
     if (newUser) {
-       console.log("User Registered  ");
+      console.log("User Registered  ");
       toast.success("User Registered !!");
+      if (newUser.data?.token) {
+        localStorage.setItem("token", newUser.data.token);
+      }
       return newUser.data;
-  
-      
-
-  
     }
   } catch (error) {
     const message =
@@ -45,9 +32,11 @@ export const loginUser = async (data) => {
     if (loggedinUser) {
       console.log("user logged in ");
       toast.success("User logged in !!");
+      if (loggedinUser.data?.token) {
+        localStorage.setItem("token", loggedinUser.data.token);
+      }
       return loggedinUser.data.user;
     }
-     
   } catch (error) {
     const message =
       error?.response?.data?.message || "Login failed. Please try again.";
@@ -60,23 +49,22 @@ export const loginUser = async (data) => {
 export const logoutUser = async () => {
   try {
     let res = await axiosInstance.post("/auth/logout");
-
+    localStorage.removeItem("token");
     if (res) {
-       toast.success("User logout ");
+      toast.success("User logout ");
       return res.data.message;                     
     }
   } catch (error) {
     console.log("error in logout", error);
+    localStorage.removeItem("token");
   }
 };
 
-
 export const forgotpass = async (email) => {
   try { 
-    let res = await axiosInstance.post("/auth/forgot",{ email });
-
+    let res = await axiosInstance.post("/auth/forgot", { email });
     if (res) {
-       toast.success("If an account exists, a reset link has been sent.");
+      toast.success("If an account exists, a reset link has been sent.");
       return res.data.message;                     
     }
   } catch (error) {
@@ -97,4 +85,3 @@ export const updateProfileApi = async (formData) => {
     throw new Error(message);
   }
 };
-

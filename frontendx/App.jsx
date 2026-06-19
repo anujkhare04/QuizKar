@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { adduser } from "./src/feature/auth.slice";
+import { adduser, removeuser } from "./src/feature/auth.slice";
 import Home from "./src/pages/home";
 import CreateQuiz from "./src/pages/creatquiz";
 import Login from "./src/pages/login";
@@ -25,6 +25,8 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
       try {
         const res = await axiosInstance.get("/auth/profile");
         console.log(res);
@@ -32,6 +34,7 @@ const App = () => {
         dispatch(adduser(res.data));
       } catch (err) {
         console.log(err);
+        dispatch(removeuser());
       }
     };
 
