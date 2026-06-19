@@ -4,6 +4,15 @@ const usermodel = require("../model/auth");
 const { sendResetEmail } = require("../service/mailservice");
 const crypto = require("crypto");
 
+const getCookieOptions = (req) => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  path: "/",
+  maxAge: 24 * 60 * 60 * 1000,
+  domain: process.env.NODE_ENV === "production" ? req.hostname : undefined,
+});
+
 module.exports.regsiteruser = async (req, res) => {
   console.log(req.body);
 
@@ -44,14 +53,7 @@ module.exports.regsiteruser = async (req, res) => {
       process.env.JWT_SECRET_KEY
     );
 
-     const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  path: "/",
-  maxAge: 24 * 60 * 60 * 1000,
-};
-res.cookie("token", token, cookieOptions);
+    res.cookie("token", token, getCookieOptions(req));
 
     return res.json({
       message: "User register successfully",
@@ -101,14 +103,7 @@ module.exports.loginuser = async (req, res) => {
 
 
     
-    const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  path: "/",
-  maxAge: 24 * 60 * 60 * 1000,
-};
-res.cookie("token", token, cookieOptions);
+    res.cookie("token", token, getCookieOptions(req));
 
     return res.json({
       message: "user logged in !",
